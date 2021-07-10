@@ -14,7 +14,7 @@ Decentralized alternatives to [Zoom](https://www.zdnet.com/article/era-hatches-m
 <table>
 <tr>
 <a href="https://youtu.be/s_m16-w6bBI"><img width="31%" src="https://gun.eco/see/3dvr.gif" title="3D VR"/></a>
-<a href="https://github.com/cstefanache/cstefanache.github.io/blob/master/_posts/2016-08-02-gun-db-artificial-knowledge-sharing.md#gundb"><img width="31%" src="https://gun.eco/see/aiml.gif" title="AI/ML"/></a>
+<a href="https://github.com/cstefanache/cstefanache.github.io/blob/06697003449e4fc531fd32ee068bab532976f47b/_posts/2016-08-02-gun-db-artificial-knowledge-sharing.md"><img width="31%" src="https://gun.eco/see/aiml.gif" title="AI/ML"/></a>
 <a href="http://gps.gunDB.io/"><img width="31%" src="https://gun.eco/see/gps.gif" title="GPS"/></a>
 </tr>
 <tr>
@@ -130,7 +130,9 @@ Thanks to:
 <a href="http://github.com/finwo">Robin Bron</a>,
 <a href="http://github.com/ElieMakhoul">Elie Makhoul</a>,
 <a href="http://github.com/mikestaub">Mike Staub</a>,
-<a href="http://github.com/bmatusiak">Bradley Matusiak</a>
+<a href="http://github.com/bmatusiak">Bradley Matusiak</a>,
+<a href="https://github.com/sjuxax">Jeff Cook</a>,
+<a href="https://github.com/nmauersberg">Nico</a>
 </p>
 
  - Join others in sponsoring code: https://www.patreon.com/gunDB !
@@ -217,7 +219,12 @@ var SEA = require('gun/sea');
 
  > Note: The default examples that get auto-deployed on `npm start` CDN-ify all GUN files, modules, & storage.
 
-To quickly spin up a GUN relay peer for your development team, utilize either [Heroku](http://heroku.com), [Docker](http://docker.com), any variant thereof [Dokku](http://dokku.viewdocs.io/dokku/), [Flynn.io](http://flynn.io), [now.sh](https://zeit.co/now), etc. ! Or use all of them so your relays are decentralized too!
+To quickly spin up a GUN relay peer for your development team, utilize [Zeet](https://zeet.co), [Heroku](http://heroku.com), [Docker](http://docker.com), or any variant thereof [Dokku](http://dokku.viewdocs.io/dokku/), [Flynn.io](http://flynn.io), [now.sh](https://zeit.co/now), etc. ! Or use all of them so your relays are decentralized too!
+
+### [Zeet.co](https://www.zeet.co/)
+
+[![Deploy](https://deploy.zeet.co/gun.svg)](https://deploy.zeet.co/?url=https://github.com/amark/gun)
+
 
 ### [Heroku](https://www.heroku.com/)
 
