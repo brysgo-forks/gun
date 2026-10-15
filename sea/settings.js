@@ -1,6 +1,7 @@
+;(function(){
 
     var SEA = require('./root');
-    var Buffer = require('./buffer');
+    var shim = require('./shim');
     var s = {};
     s.pbkdf2 = {hash: {name : 'SHA-256'}, iter: 100000, ks: 64};
     s.ecdsa = {
@@ -31,10 +32,10 @@
     };
 
     s.check = function(t){ return (typeof t == 'string') && ('SEA{' === t.slice(0,4)) }
-    s.parse = function p(t){ try {
+    s.parse = async function p(t){ try {
       var yes = (typeof t == 'string');
       if(yes && 'SEA{' === t.slice(0,4)){ t = t.slice(3) }
-      return yes ? JSON.parse(t) : t;
+      return yes ? await shim.parse(t) : t;
       } catch (e) {}
       return t;
     }
@@ -42,3 +43,4 @@
     SEA.opt = s;
     module.exports = s
   
+}());

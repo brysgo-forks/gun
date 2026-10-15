@@ -1,3 +1,4 @@
+;(function(){
 
 var Gun = require('./root');
 Gun.chain.back = function(n, opt){ var tmp;
@@ -31,10 +32,11 @@ Gun.chain.back = function(n, opt){ var tmp;
 		&& u === (yes = n(tmp, opt))){}
 		return yes;
 	}
-	if(Gun.num.is(n)){
+	if('number' == typeof n){
 		return (at.back || at).$.back(n - 1);
 	}
 	return this;
 }
 var empty = {}, u;
 	
+}());

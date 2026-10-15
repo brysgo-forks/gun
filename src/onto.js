@@ -1,15 +1,13 @@
+;(function(){
 
 // On event emitter generic javascript utility.
 module.exports = function onto(tag, arg, as){
 	if(!tag){ return {to: onto} }
-	var u, tag = (this.tag || (this.tag = {}))[tag] ||
-	(this.tag[tag] = {tag: tag, to: onto._ = {
-		next: function(arg){ var tmp;
-			if((tmp = this.to)){
-				tmp.next(arg);
-		}}
-	}});
-	if('function' == typeof arg){
+	var u, f = 'function' == typeof arg, tag = (this.tag || (this.tag = {}))[tag] || f && (
+		this.tag[tag] = {tag: tag, to: onto._ = { next: function(arg){ var tmp;
+			if(tmp = this.to){ tmp.next(arg) }
+	}}});
+	if(f){
 		var be = {
 			off: onto.off ||
 			(onto.off = function(){
@@ -37,3 +35,4 @@ module.exports = function onto(tag, arg, as){
 	return tag;
 };
 	
+}());

@@ -1,3 +1,4 @@
+;(function(){
 
     var SEA = require('./root');
     var shim = require('./shim');
@@ -8,10 +9,11 @@
       opt = opt || {};
       var key = (pair||opt).epriv || pair;
       if(!key){
+        if(!SEA.I){ throw 'No decryption key.' }
         pair = await SEA.I(null, {what: data, how: 'decrypt', why: opt.why});
         key = pair.epriv || pair;
       }
-      var json = S.parse(data);
+      var json = await S.parse(data);
       var buf, bufiv, bufct; try{
         buf = shim.Buffer.from(json.s, opt.encode || 'base64');
         bufiv = shim.Buffer.from(json.iv, opt.encode || 'base64');
@@ -26,7 +28,8 @@
           return await SEA.decrypt(data, pair, cb, opt);
         }
       }
-      var r = S.parse(new shim.TextDecoder('utf8').decode(ct));
+      var raw = new shim.TextDecoder('utf8').decode(ct);
+      var r = opt.skipParse ? raw : await S.parse(raw);
       if(cb){ try{ cb(r) }catch(e){console.log(e)} }
       return r;
     } catch(e) { 
@@ -39,3 +42,4 @@
 
     module.exports = SEA.decrypt;
   
+}());

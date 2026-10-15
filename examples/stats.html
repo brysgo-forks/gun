@@ -29,7 +29,7 @@
   .tall { height: 5em; }
 </style>
 
-<div class="center"><span class="shout" id="peers">0</span> peers <span class="shout" id="time">0</span> min <span class="shout" id="nodes">0</span> nodes <span class="shout" id="hours">0</span> hours <span class="shout" id="block">0</span> block</div>
+<div class="center"><span class="shout" id="peers">0</span> peers <span class="shout" id="time">0</span> min <span class="shout" id="nodes">0</span> nodes <span class="shout" id="hours">0</span> hours <span class="shout" id="block">0</span> block <span class="shout" id="stack">0</span> stack</div>
 
 <input id="url" class="center input crack" placeholder="enter peer stats source url">
 
@@ -44,18 +44,29 @@
 <script src="./jquery.js"></script>
 <script src="./smoothie.js" charset="utf-8"></script>
 <script>
-  var up, br = 0, bt = 0;
+  if(window.location.search){url.value = window.location.search.split("?")[1]}
+  var up, br = 0, bt = 0, tmp;
   var fetchData = async function(){
     // fetch the data from server
     var S = +new Date;
     var data = await (await fetch(url.value||(location.origin+'/gun/stats.radata'), {method: 'GET',mode: 'cors'})).json();
     $('#block').text(((br += (+new Date - S)/1000) / ++bt).toFixed(1));
     data.over = (data.over/1000) || 15;
-		$('#peers').text(data.peers.count);
+		$('#stack').text((data.cpu||'').stack);
+    $('#peers').text(data.peers.count);
 		$('#time').text((data.peers.time / 1000 / 60).toFixed(0));
 		$('#nodes').text(data.node.count);
 		$('#hours').text((data.up.time / 60 / 60).toFixed(1));
     if(data.up.time === up){ console.log("up same as before") } up = data.up.time;
+
+    ;(async function(){ try{
+      Stats('peers#').line.append(+new Date, data.peers.count);
+      return;
+      Stats('cpu%');
+      tmp = await (await fetch(new Request(location.origin+'/gun/stats.top.radata'), {method: 'GET',mode: 'cors'})).text();
+      tmp = parseFloat((tmp.split('\n').filter(l => l.indexOf('node')+1)[0]||'').split(/\s+/).slice(-4)[0]||'0');
+      Stats('cpu%').line.append(+new Date, tmp);
+    }catch(e){console.log(e)}}());
 
 		Stats('memory').line.append(+new Date, data.memory.heapTotal / 1024 / 1024);
     try{ Stats('dam # in/s').line.append(+new Date, Math.round(data.dam.in.count / data.over)); }catch(e){}
@@ -64,6 +75,7 @@
     try{ Stats('dam out MB/s').line.append(+new Date, data.dam.out.done / 1024 / 1024 / data.over); }catch(e){}
 
     console.log('data',data);
+
     //fetch keys in all, these may be dynamically changing
     //for each key, check if we already have created a time series, if not, create it and add it
     // to the chart corredsponding to the unit of measure
@@ -76,9 +88,10 @@
         // append data [timestamp], [data]
         chart.line.append(arr[i][0], arr[i][1]);
       }
-    })
+    });
   }
-  setInterval(fetchData, 15 * 1000);
+  //setInterval(fetchData, 15 * 1000);
+  setInterval(fetchData, 5000);
   fetchData();
 
   function Stats(key, chart){
@@ -99,6 +112,31 @@
 		// tbd later
 		return chart;
   }
+  ;(function(){
+  if('https' != (''+location).slice(0,5) && "localhost" != location.hostname){
+    $('body').append("<button id='https'>click here to try generating https certs</button>");
+    if(/^(?!0)(?!.*\.$)((1?\d?\d|25[0-5]|2[0-4]\d)(\.|$)){4}$/.test(location.hostname)){
+      $('#https').text("Link this IP address to a Domain by adding an `A Record` to your DNS settings that point to `"+ location.hostname +"` (we recommend the `name/host` be any subdomain you want, like `relay`, but if you want the root domain itself to directly point here use `*`). Then come back here on the domain & click this button to generate HTTPS certificates.");
+      return;
+    }
+    $('body').append("<input id='email' placeholder='email'/>");
+    $('#https').on('click', function(){
+      $(this).text("look at console.log for errors, if none, try https");
+      var gun = GUN(location.origin + '/gun');
+      if(!$('#email').val()){
+        $(this).text("email necessary for certs! Type it in & click here again.");
+        return;
+      }
+      setTimeout(function(){
+        gun._.opt.mesh.say({dam: 'service', try: 'https', email: $('#email').val(), domain: location.hostname});
+        setTimeout(function(){
+          if(gun._.opt.mesh.near){ return }
+          $('#https').text("It might have worked! try HTTPS!");
+        }, 9000);
+      }, 999);
+    });
+  }
+  }());
 /*
   Notes to Self about Debugging:
   1. Read Disks can spike up to 1min, I suspect other operations are blocking it from resolving as fast as it otherwise would.
@@ -110,5 +148,6 @@
   7. Watch out for get/put loops times, maybe indicating (5) issues?
 */
 </script>
+<script src="../gun.js"></script>
 </body>
 </html>

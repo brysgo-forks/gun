@@ -1,3 +1,4 @@
+;(function(){
 
     var SEA = require('./root');
     var shim = require('./shim');
@@ -7,12 +8,12 @@
 
     SEA.work = SEA.work || (async (data, pair, cb, opt) => { try { // used to be named `proof`
       var salt = (pair||{}).epub || pair; // epub not recommended, salt should be random!
-      var opt = opt || {};
+      opt = opt || {};
       if(salt instanceof Function){
         cb = salt;
         salt = u;
       }
-      data = (typeof data == 'string')? data : JSON.stringify(data);
+      data = (typeof data == 'string')? data : await shim.stringify(data);
       if('sha' === (opt.name||'').toLowerCase().slice(0,3)){
         var rsha = shim.Buffer.from(await sha(data, opt.name), 'binary').toString(opt.encode || 'base64')
         if(cb){ try{ cb(rsha) }catch(e){console.log(e)} }
@@ -40,3 +41,4 @@
 
     module.exports = SEA.work;
   
+}());
